@@ -1,0 +1,16 @@
+# Only GitHub Actions. uv.lock here is test tooling pinned in lockstep with
+# pytest-homeassistant-custom-component, so updating packages one by one just
+# produces PRs that can't resolve.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    commit-message:
+      prefix: ci
+    groups:
+      github-actions:
+        patterns: ["*"]
+
