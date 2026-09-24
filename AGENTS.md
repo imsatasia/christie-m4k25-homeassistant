@@ -63,3 +63,14 @@ Use conventional commits for releasable changes: `fix: ...` or `feat: ...`.
 5. When bumping `py-christie-mseries`'s minimum version in `manifest.json`'s
    `requirements` and `pyproject.toml`'s `dependencies`, keep both in sync
    and confirm the referenced version is actually published before merging.
+
+## Releases
+
+`main` is protected: every change goes through a pull request with CI passing.
+A release is a `vX.Y.Z` tag on `main`; `.github/workflows/release.yml` then
+creates the GitHub Release that HACS lists. Bump `manifest.json`'s `version`
+and `pyproject.toml`'s `version` together first -- the workflow refuses a tag
+that doesn't match both, a commit that isn't on `main`, or one without a
+passing CI run (CI includes the TruffleHog scan; the scan action itself does
+nothing on a tag push, so the workflow checks CI's result instead). Nothing is
+built: HACS installs `custom_components/christie_m4k25/` from the tagged commit.
