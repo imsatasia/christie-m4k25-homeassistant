@@ -1,0 +1,42 @@
+name: Validate
+
+# HACS's own repository checks and Home Assistant's hassfest. Read-only: it
+# doesn't build or publish anything, so unlike CI it doesn't wait for the
+# secret scan. Runs daily too, since both checks change under us over time.
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-hacs:
+    name: HACS validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # Pinned to a commit, but the action always runs the newest
+      # ghcr.io/hacs/action:main image, so HACS's current rules apply.
+      - name: HACS validation
+        uses: hacs/action@1ebf01c408f29afcb6406bd431bc98fd8cbb15aa # main
+        with:
+          category: integration
+          # No PR comments: that would need write access to pull requests.
+          comment: "false"
+
+  validate-hassfest:
+    name: Hassfest validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      # Runs the newest ghcr.io/home-assistant/hassfest image.
+      - name: Hassfest validation
+        uses: home-assistant/actions/hassfest@58bff37c8947f690ace498be413a9b78d6f30f93 # master
