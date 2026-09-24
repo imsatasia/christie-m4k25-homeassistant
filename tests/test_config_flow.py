@@ -9,8 +9,12 @@ from homeassistant.data_entry_flow import FlowResultType
 from custom_components.christie_m4k25.const import DOMAIN
 
 
-async def test_user_flow_creates_entry(hass: HomeAssistant, mock_projector):
-    """A successful probe creates a config entry."""
+async def test_user_flow_creates_entry(hass: HomeAssistant, mock_projector, mock_setup_entry):
+    """A successful probe creates a config entry.
+
+    `mock_setup_entry` matters: creating the entry makes Home Assistant set it up,
+    and without it the coordinator would try to open a real socket.
+    """
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={"source": config_entries.SOURCE_USER}
     )
@@ -48,7 +52,7 @@ async def test_user_flow_cannot_connect(hass: HomeAssistant):
     assert result["errors"] == {"base": "cannot_connect"}
 
 
-async def test_user_flow_aborts_on_duplicate(hass: HomeAssistant, mock_projector):
+async def test_user_flow_aborts_on_duplicate(hass: HomeAssistant, mock_projector, mock_setup_entry):
     """A second entry for the same host:port aborts as already configured."""
     with patch(
         "custom_components.christie_m4k25.config_flow.ChristieM4K25",
