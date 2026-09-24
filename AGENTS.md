@@ -74,3 +74,14 @@ that doesn't match both, a commit that isn't on `main`, or one without a
 passing CI run (CI includes the TruffleHog scan; the scan action itself does
 nothing on a tag push, so the workflow checks CI's result instead). Nothing is
 built: HACS installs `custom_components/christie_m4k25/` from the tagged commit.
+
+## Validation
+
+`.github/workflows/validate.yml` runs HACS's repository checks (`hacs/action`) and
+Home Assistant's `hassfest` on every PR and push to `main`, and daily. To run hassfest
+locally without any token: `docker run --rm -v "$PWD":/github/workspace ghcr.io/home-assistant/hassfest`.
+(The HACS check needs a GitHub token, so it only runs in CI.) The HACS brand check passes
+because `custom_components/christie_m4k25/brand/icon.png` exists; the icons there are a
+generic projector glyph, deliberately not Christie's trademarked logo. Both actions run
+their newest Docker image, so a new upstream rule can turn a green check red without any
+change here.
