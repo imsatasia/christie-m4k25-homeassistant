@@ -2,7 +2,7 @@
 name = "christie-m4k25-homeassistant"
 version = "1.0.1"
 description = "Home Assistant integration for the Christie M 4K25 RGB projector"
-requires-python = ">=3.11"
+requires-python = ">=3.14.2"
 authors = [{ name = "imsatasia", email = "imsatasia@yahoo.com" }]
 dependencies = [
     "christie-mseries>=1.0.0",
