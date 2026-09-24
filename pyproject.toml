@@ -21,6 +21,10 @@ dev = [
 [tool.uv]
 package = false
 sources = { christie-mseries = { path = "../py-christie-mseries", editable = true } }
+# Test tooling only, nothing here ships. Home Assistant pins cryptography exactly and
+# its current pin (48.0.1) has advisories fixed in 50.0.0; the tests pass on 50.x.
+# Drop this once Home Assistant's own pin moves past 48.x.
+override-dependencies = ["cryptography>=50.0.0"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
