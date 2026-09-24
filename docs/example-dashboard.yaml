@@ -1,0 +1,290 @@
+# Example Lovelace view for this integration, using Bubble Card
+# (https://github.com/Clooos/Bubble-Card). Drop this under `views:` in a
+# dashboard that has `mode: yaml`. Entity IDs embed the projector's IP with the
+# dots replaced by underscores, so a projector at 192.0.2.50 gets IDs like
+# switch.christie_m_4k25_rgb_192_0_2_50_power. Replace `192_0_2_50` throughout
+# with your own projector's IP in the same form -- check
+# Settings > Devices & Services > Christie M 4K25 RGB for your exact IDs.
+# If the device is assigned to an area, Home Assistant may put the area name
+# in front of some entity IDs (e.g. select.<area>_christie_m_4k25_rgb_..._input).
+#
+# This is a `sections` view laid out for a tablet: two columns, controls on
+# the left and the lens on the right. The `rows: 0.941` values just keep the
+# Bubble Card buttons compact inside a sections view.
+#
+# The 4 lens number entities are disabled by default (Settings > Devices &
+# Services > Entities) until you enable them. The Input and Test Pattern
+# selects are unavailable while the projector is in standby, which refuses
+# input and pattern changes.
+
+  - title: Christie
+    path: christie
+    icon: mdi:projector
+    type: sections
+    max_columns: 2
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: Christie M4K25
+            heading_style: title
+            icon: mdi:projector
+            badges:
+              - type: entity
+                entity: sensor.christie_m_4k25_rgb_192_0_2_50_status
+                icon: mdi:power
+                show_state: true
+                show_icon: true
+                tap_action:
+                  action: more-info
+              - type: entity
+                entity: binary_sensor.christie_m_4k25_rgb_192_0_2_50_liteloc
+                icon: mdi:television-shimmer
+                show_state: true
+                show_icon: true
+                tap_action:
+                  action: more-info
+              - type: entity
+                entity: binary_sensor.christie_m_4k25_rgb_192_0_2_50_alarm
+                icon: mdi:alert
+                show_state: true
+                show_icon: true
+                tap_action:
+                  action: more-info
+            grid_options:
+              columns: full
+          # Power: the icon bubble is green when on and red when off.
+          - type: custom:bubble-card
+            card_type: button
+            button_type: switch
+            entity: switch.christie_m_4k25_rgb_192_0_2_50_power
+            name: Power
+            icon: mdi:projector
+            show_state: true
+            styles: |
+              ha-card {
+                --bubble-button-accent-color: transparent;
+              }
+              .bubble-icon-container {
+                background-color: ${hass.states['switch.christie_m_4k25_rgb_192_0_2_50_power']?.state === 'on' ? '#43A047' : hass.states['switch.christie_m_4k25_rgb_192_0_2_50_power']?.state === 'off' ? '#E53935' : 'rgba(255,255,255,0.06)'} !important;
+              }
+              .bubble-icon {
+                color: ${hass.states['switch.christie_m_4k25_rgb_192_0_2_50_power']?.state === 'on' || hass.states['switch.christie_m_4k25_rgb_192_0_2_50_power']?.state === 'off' ? '#ffffff' : 'rgba(255,255,255,0.5)'} !important;
+              }
+            sub_button:
+              - entity: sensor.christie_m_4k25_rgb_192_0_2_50_input
+                icon: mdi:hdmi-port
+                show_name: false
+                show_state: true
+                tap_action:
+                  action: more-info
+              - entity: sensor.christie_m_4k25_rgb_192_0_2_50_hours
+                icon: mdi:clock-outline
+                show_name: false
+                show_state: true
+                tap_action:
+                  action: more-info
+            grid_options:
+              columns: full
+            rows: 0.941
+          - type: custom:bubble-card
+            card_type: button
+            button_type: switch
+            entity: switch.christie_m_4k25_rgb_192_0_2_50_shutter
+            name: Shutter
+            icon: mdi:camera-iris
+            show_state: true
+            grid_options:
+              columns: 6
+            rows: 0.941
+          - type: custom:bubble-card
+            card_type: button
+            button_type: state
+            entity: sensor.christie_m_4k25_rgb_192_0_2_50_intake_temperature
+            name: Intake
+            icon: mdi:thermometer
+            grid_options:
+              columns: 6
+            rows: 0.941
+          - type: custom:bubble-card
+            card_type: button
+            button_type: slider
+            entity: number.christie_m_4k25_rgb_192_0_2_50_brightness
+            name: Brightness
+            icon: mdi:brightness-6
+            show_state: true
+            grid_options:
+              columns: full
+            rows: 0.941
+          # Input lists the physical ports ("HDMI 2.1 Port 3"), not the
+          # projector's own "One-Port VOM-HDMI" names.
+          - type: custom:bubble-card
+            card_type: select
+            entity: select.christie_m_4k25_rgb_192_0_2_50_input
+            name: Input
+            icon: mdi:hdmi-port
+            show_state: true
+            grid_options:
+              columns: 6
+          - type: custom:bubble-card
+            card_type: select
+            entity: select.christie_m_4k25_rgb_192_0_2_50_test_pattern
+            name: Test Pattern
+            icon: mdi:test-tube
+            show_state: true
+            grid_options:
+              columns: 6
+          - type: heading
+            heading: Lens Presets
+            heading_style: title
+            icon: mdi:content-save
+            grid_options:
+              columns: full
+          - type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Save 1
+            icon: mdi:content-save
+            tap_action:
+              action: perform-action
+              perform_action: christie_m4k25.save_lens_preset
+              data:
+                preset: '1'
+            grid_options:
+              columns: 6
+            rows: 0.941
+          - type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Save 2
+            icon: mdi:content-save
+            tap_action:
+              action: perform-action
+              perform_action: christie_m4k25.save_lens_preset
+              data:
+                preset: '2'
+            grid_options:
+              columns: 6
+            rows: 0.941
+          - type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Save 3
+            icon: mdi:content-save
+            tap_action:
+              action: perform-action
+              perform_action: christie_m4k25.save_lens_preset
+              data:
+                preset: '3'
+            grid_options:
+              columns: 6
+            rows: 0.941
+          - type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Save 4
+            icon: mdi:content-save
+            tap_action:
+              action: perform-action
+              perform_action: christie_m4k25.save_lens_preset
+              data:
+                preset: '4'
+            grid_options:
+              columns: 6
+            rows: 0.941
+          - type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Recall 1
+            icon: mdi:play
+            tap_action:
+              action: perform-action
+              perform_action: christie_m4k25.recall_lens_preset
+              data:
+                preset: '1'
+            grid_options:
+              columns: 6
+            rows: 0.941
+          - type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Recall 2
+            icon: mdi:play
+            tap_action:
+              action: perform-action
+              perform_action: christie_m4k25.recall_lens_preset
+              data:
+                preset: '2'
+            grid_options:
+              columns: 6
+            rows: 0.941
+          - type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Recall 3
+            icon: mdi:play
+            tap_action:
+              action: perform-action
+              perform_action: christie_m4k25.recall_lens_preset
+              data:
+                preset: '3'
+            grid_options:
+              columns: 6
+            rows: 0.941
+          - type: custom:bubble-card
+            card_type: button
+            button_type: name
+            name: Recall 4
+            icon: mdi:play
+            tap_action:
+              action: perform-action
+              perform_action: christie_m4k25.recall_lens_preset
+              data:
+                preset: '4'
+            grid_options:
+              columns: 6
+            rows: 0.941
+      - type: grid
+        cards:
+          - type: heading
+            heading: Lens
+            heading_style: title
+            icon: mdi:image-filter-center-focus
+            grid_options:
+              columns: full
+          - type: tile
+            entity: number.christie_m_4k25_rgb_192_0_2_50_lens_focus
+            name: Focus
+            icon: mdi:image-filter-center-focus
+            features:
+              - type: numeric-input
+                style: buttons
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: number.christie_m_4k25_rgb_192_0_2_50_lens_zoom
+            name: Zoom
+            icon: mdi:magnify
+            features:
+              - type: numeric-input
+                style: buttons
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: number.christie_m_4k25_rgb_192_0_2_50_lens_horizontal
+            name: Lens H
+            icon: mdi:arrow-left-right
+            features:
+              - type: numeric-input
+                style: buttons
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: number.christie_m_4k25_rgb_192_0_2_50_lens_vertical
+            name: Lens V
+            icon: mdi:arrow-up-down
+            features:
+              - type: numeric-input
+                style: buttons
+            grid_options:
+              columns: 6

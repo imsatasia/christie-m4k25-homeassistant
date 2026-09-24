@@ -1,0 +1,134 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up Christie M 4K25",
+        "description": "Enter the projector's IP address. It should have a DHCP reservation -- there is no discovery, and a changed address stops all control.",
+        "data": {
+          "host": "[%key:common::config_flow::data::host%]",
+          "port": "Port"
+        },
+        "data_description": {
+          "host": "The hostname or IP address of your Christie M 4K25.",
+          "port": "Christie's serial API port. 3002 unless you have a reason to change it."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
+    },
+    "abort": {
+      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]"
+    }
+  },
+  "exceptions": {
+    "entry_id_required": {
+      "message": "Multiple Christie M 4K25 entries are loaded. Provide an entry_id."
+    },
+    "invalid_entry_id": {
+      "message": "Unknown Christie M 4K25 entry_id: {entry_id}"
+    }
+  },
+  "services": {
+    "save_lens_preset": {
+      "name": "Save Lens Preset",
+      "description": "Save the current lens position as a preset.",
+      "fields": {
+        "entry_id": {
+          "name": "Entry ID",
+          "description": "Optional config entry id when multiple Christie devices are loaded."
+        },
+        "preset": {
+          "name": "Preset",
+          "description": "Preset slot."
+        }
+      }
+    },
+    "recall_lens_preset": {
+      "name": "Recall Lens Preset",
+      "description": "Move the lens to a previously saved preset.",
+      "fields": {
+        "entry_id": {
+          "name": "Entry ID",
+          "description": "Optional config entry id when multiple Christie devices are loaded."
+        },
+        "preset": {
+          "name": "Preset",
+          "description": "Preset slot."
+        }
+      }
+    },
+    "send_raw": {
+      "name": "Send Raw Command",
+      "description": "Escape hatch: send any code not wrapped by this integration.",
+      "fields": {
+        "entry_id": {
+          "name": "Entry ID",
+          "description": "Optional config entry id when multiple Christie devices are loaded."
+        },
+        "command": {
+          "name": "Command",
+          "description": "The code to send, e.g. \"GAM?\" or \"SHU 1\"."
+        }
+      }
+    }
+  },
+  "entity": {
+    "switch": {
+      "power": {
+        "name": "Power"
+      },
+      "shutter": {
+        "name": "Shutter"
+      }
+    },
+    "number": {
+      "brightness": {
+        "name": "Brightness"
+      },
+      "lens_focus": {
+        "name": "Lens Focus"
+      },
+      "lens_zoom": {
+        "name": "Lens Zoom"
+      },
+      "lens_horizontal": {
+        "name": "Lens Horizontal"
+      },
+      "lens_vertical": {
+        "name": "Lens Vertical"
+      }
+    },
+    "select": {
+      "input": {
+        "name": "Input"
+      },
+      "test_pattern": {
+        "name": "Test Pattern"
+      }
+    },
+    "sensor": {
+      "status": {
+        "name": "Status"
+      },
+      "input": {
+        "name": "Input"
+      },
+      "hours": {
+        "name": "Hours"
+      },
+      "intake_temperature": {
+        "name": "Intake Temperature"
+      }
+    },
+    "binary_sensor": {
+      "liteloc": {
+        "name": "LiteLOC"
+      },
+      "alarm": {
+        "name": "Alarm"
+      }
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "entity": {
+    "switch": {
+      "power": {
+        "default": "mdi:projector"
+      },
+      "shutter": {
+        "default": "mdi:camera-iris"
+      }
+    },
+    "number": {
+      "brightness": {
+        "default": "mdi:brightness-6"
+      },
+      "lens_focus": {
+        "default": "mdi:image-filter-center-focus"
+      },
+      "lens_zoom": {
+        "default": "mdi:magnify"
+      },
+      "lens_horizontal": {
+        "default": "mdi:arrow-left-right"
+      },
+      "lens_vertical": {
+        "default": "mdi:arrow-up-down"
+      }
+    },
+    "select": {
+      "input": {
+        "default": "mdi:hdmi-port"
+      },
+      "test_pattern": {
+        "default": "mdi:test-tube"
+      }
+    },
+    "sensor": {
+      "status": {
+        "default": "mdi:power"
+      },
+      "input": {
+        "default": "mdi:hdmi-port"
+      },
+      "hours": {
+        "default": "mdi:clock-outline"
+      },
+      "intake_temperature": {
+        "default": "mdi:thermometer"
+      }
+    },
+    "binary_sensor": {
+      "liteloc": {
+        "default": "mdi:television-shimmer"
+      },
+      "alarm": {
+        "default": "mdi:alert"
+      }
+    }
+  }
+}

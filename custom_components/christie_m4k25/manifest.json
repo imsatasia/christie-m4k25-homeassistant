@@ -1,0 +1,18 @@
+{
+  "domain": "christie_m4k25",
+  "name": "Christie M 4K25 RGB",
+  "codeowners": [
+    "@imsatasia"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/imsatasia/christie-m4k25-homeassistant",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/imsatasia/christie-m4k25-homeassistant/issues",
+  "loggers": [
+    "christie_mseries"
+  ],
+  "requirements": [
+    "christie-mseries>=1.0.0"
+  ],
+  "version": "1.0.0"
+}

@@ -1,0 +1,67 @@
+save_lens_preset:
+  name: Save Lens Preset
+  description: >-
+    Save the current focus/zoom/horizontal/vertical lens position as a
+    preset. The projector has no lens memory of its own, so this is
+    synthesised the same way the Control4 driver does it.
+  fields:
+    entry_id:
+      name: Entry ID
+      description: Optional config entry id when multiple Christie devices are loaded.
+      required: false
+      selector:
+        text:
+    preset:
+      name: Preset
+      description: Preset slot.
+      required: true
+      selector:
+        select:
+          options:
+            - "1"
+            - "2"
+            - "3"
+            - "4"
+
+recall_lens_preset:
+  name: Recall Lens Preset
+  description: >-
+    Move the lens to a previously saved preset. Refused while the projector
+    is in standby, same as any other lens move.
+  fields:
+    entry_id:
+      name: Entry ID
+      description: Optional config entry id when multiple Christie devices are loaded.
+      required: false
+      selector:
+        text:
+    preset:
+      name: Preset
+      description: Preset slot.
+      required: true
+      selector:
+        select:
+          options:
+            - "1"
+            - "2"
+            - "3"
+            - "4"
+
+send_raw:
+  name: Send Raw Command
+  description: >-
+    Escape hatch: send any code not wrapped by this integration, e.g. "GAM?"
+    to read or "SHU 1" to write. Subcodes work too, e.g. "LAS+POWR?".
+  fields:
+    entry_id:
+      name: Entry ID
+      description: Optional config entry id when multiple Christie devices are loaded.
+      required: false
+      selector:
+        text:
+    command:
+      name: Command
+      description: The code to send, with an optional subcode and/or data value.
+      required: true
+      selector:
+        text:

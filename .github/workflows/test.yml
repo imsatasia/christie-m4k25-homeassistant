@@ -1,0 +1,119 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Only PR runs are superseded. A push run is never cancelled: the secret scan
+# checks just the commits since the previous push, so a cancelled run would
+# leave them unscanned.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  secrets:
+    name: Secret scan
+    uses: ./.github/workflows/secret-scan.yml
+
+  # Tests against a sibling checkout of py-christie-mseries' `main` branch,
+  # which can be ahead of what is released. The `pypi` job below covers the
+  # version users actually get.
+  quality:
+    name: Quality
+    needs: [secrets]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          path: christie-m4k25-homeassistant
+
+      - name: Check out py-christie-mseries
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          repository: imsatasia/py-christie-mseries
+          path: py-christie-mseries
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
+        with:
+          python-version: "3.13"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@cec208311dfd045dd5311c1add060b2062131d57 # v7
+
+      - name: Sync dependencies (against sibling py-christie-mseries checkout)
+        working-directory: christie-m4k25-homeassistant
+        run: uv sync --group dev
+
+      - name: Ruff lint
+        working-directory: christie-m4k25-homeassistant
+        run: uv run ruff check custom_components tests
+
+      - name: Ruff format check
+        working-directory: christie-m4k25-homeassistant
+        run: uv run ruff format --check custom_components tests
+
+      - name: Ty
+        working-directory: christie-m4k25-homeassistant
+        run: uv run ty check --extra-search-path ../py-christie-mseries custom_components tests
+
+      - name: Pytest
+        working-directory: christie-m4k25-homeassistant
+        run: uv run pytest
+
+  # Users get the library from PyPI (manifest.json "requirements"), not from
+  # GitHub. This runs the tests against exactly that -- with no sibling
+  # checkout -- at the manifest's minimum version and at the newest release,
+  # so an unreleased library change can't make `quality` pass while the
+  # published pair is broken.
+  pypi:
+    name: Tests against PyPI library (${{ matrix.resolution }})
+    needs: [secrets]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        resolution: [lowest-direct, highest]
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
+        with:
+          python-version: "3.13"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@cec208311dfd045dd5311c1add060b2062131d57 # v7
+
+      # uv.lock pins the library to the sibling path, so install everything
+      # else from the lock and take the library from PyPI below.
+      - name: Sync locked dev tooling (all but the library)
+        run: uv sync --frozen --group dev --no-install-package christie-mseries
+
+      - name: Install the library from PyPI, as manifest.json requires it
+        run: |
+          python -c "import json; print(*json.load(open('custom_components/christie_m4k25/manifest.json'))['requirements'], sep='\n')" > "$RUNNER_TEMP/requirements.txt"
+          cat "$RUNNER_TEMP/requirements.txt"
+          uv pip install --reinstall --resolution ${{ matrix.resolution }} -r "$RUNNER_TEMP/requirements.txt"
+
+      - name: Confirm the library came from an index, not a path
+        run: |
+          uv run --frozen --no-sync python -c "
+          import importlib.metadata as m
+          d = m.distribution('christie-mseries')
+          assert d.read_text('direct_url.json') is None, 'installed from a path/URL'
+          print('christie-mseries', d.version, 'from PyPI')"
+
+      - name: Pytest
+        run: uv run --frozen --no-sync pytest
