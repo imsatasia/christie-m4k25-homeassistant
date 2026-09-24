@@ -1903,7 +1903,7 @@ wheels = [
 
 [[package]]
 name = "christie-m4k25-homeassistant"
-version = "1.0.0"
+version = "1.0.1"
 source = { virtual = "." }
 dependencies = [
     { name = "christie-mseries" },
