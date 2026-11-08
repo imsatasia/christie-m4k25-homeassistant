@@ -12,7 +12,7 @@
     "christie_mseries"
   ],
   "requirements": [
-    "christie-mseries>=1.0.0"
+    "christie-mseries>=1.2.0"
   ],
   "version": "1.0.1"
 }
