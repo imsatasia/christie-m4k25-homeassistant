@@ -37,6 +37,9 @@ class ChristieSwitchEntityDescription(SwitchEntityDescription):
     # is only about refreshing the UI promptly -- the next scheduled poll
     # would catch up regardless.
     refresh_delay: float = 2.0
+    # None means always available (power, shutter); the 3D switches set one,
+    # since the projector refuses them in some states.
+    available_fn: Callable[[Snapshot], bool] | None = None
 
 
 SWITCHES: tuple[ChristieSwitchEntityDescription, ...] = (
@@ -56,6 +59,25 @@ SWITCHES: tuple[ChristieSwitchEntityDescription, ...] = (
         value_fn=lambda snap: snap.shutter_open,
         turn_on_fn=lambda commands: commands.async_open_shutter(),
         turn_off_fn=lambda commands: commands.async_close_shutter(),
+    ),
+    ChristieSwitchEntityDescription(
+        key="three_d_invert",
+        translation_key="three_d_invert",
+        name="3D Invert Eyes",
+        value_fn=lambda snap: snap.three_d_input_inverted,
+        turn_on_fn=lambda commands: commands.async_set_3d_input_inverted(True),
+        turn_off_fn=lambda commands: commands.async_set_3d_input_inverted(False),
+        # Refused in the packed 3D modes, where the timing controls take over.
+        available_fn=lambda snap: snap.is_on and not snap.three_d_timing,
+    ),
+    ChristieSwitchEntityDescription(
+        key="three_d_test_pattern",
+        translation_key="three_d_test_pattern",
+        name="3D Test Pattern",
+        value_fn=lambda snap: snap.three_d_test_pattern,
+        turn_on_fn=lambda commands: commands.async_set_3d_test_pattern(True),
+        turn_off_fn=lambda commands: commands.async_set_3d_test_pattern(False),
+        available_fn=lambda snap: snap.is_on,
     ),
 )
 
@@ -92,6 +114,16 @@ class ChristieSwitch(ChristieEntity, SwitchEntity):
         """Return true if the switch is on."""
         snap = self._snapshot
         return self.entity_description.value_fn(snap) if snap else None
+
+    @property
+    def available(self) -> bool:
+        """Available while polling works and, for switches that declare one,
+        while the projector's current state allows them."""
+        check = self.entity_description.available_fn
+        if check is None:
+            return super().available
+        snap = self._snapshot
+        return super().available and snap is not None and check(snap)
 
     async def async_turn_on(self, **kwargs: Any) -> None:
         """Turn the switch on."""
