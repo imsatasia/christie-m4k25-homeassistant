@@ -16,6 +16,12 @@
 # Services > Entities) until you enable them. The Input and Test Pattern
 # selects are unavailable while the projector is in standby, which refuses
 # input and pattern changes.
+#
+# The 3D section shows every 3D control. Several are unavailable by design,
+# not because something is wrong: in standby none can be changed, and the
+# projector enables the timing controls (sync output, sync delay, dark
+# interval) only in the packed modes -- Side-by-Side, Top-and-Bottom, Frame
+# Packing -- and the Invert Eyes switch only in the others.
 
   - title: Christie
     path: christie
@@ -286,5 +292,69 @@
             features:
               - type: numeric-input
                 style: buttons
+            grid_options:
+              columns: 6
+      - type: grid
+        cards:
+          - type: heading
+            heading: 3D
+            heading_style: title
+            icon: mdi:video-3d
+            grid_options:
+              columns: full
+          - type: custom:bubble-card
+            card_type: select
+            entity: select.christie_m_4k25_rgb_192_0_2_50_3d_mode
+            name: 3D Mode
+            icon: mdi:video-3d
+            show_state: true
+            grid_options:
+              columns: full
+          - type: custom:bubble-card
+            card_type: select
+            entity: select.christie_m_4k25_rgb_192_0_2_50_3d_sync_output
+            name: Sync Output
+            icon: mdi:export-variant
+            show_state: true
+            grid_options:
+              columns: full
+          - type: tile
+            entity: number.christie_m_4k25_rgb_192_0_2_50_3d_sync_delay
+            name: Sync Delay
+            icon: mdi:timer-sand
+            features:
+              - type: numeric-input
+                style: buttons
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: number.christie_m_4k25_rgb_192_0_2_50_3d_dark_interval
+            name: Dark Interval
+            icon: mdi:brightness-4
+            features:
+              - type: numeric-input
+                style: buttons
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: switch.christie_m_4k25_rgb_192_0_2_50_3d_invert_eyes
+            name: Invert Eyes
+            icon: mdi:swap-horizontal
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: switch.christie_m_4k25_rgb_192_0_2_50_3d_test_pattern
+            name: 3D Test Pattern
+            icon: mdi:sine-wave
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.christie_m_4k25_rgb_192_0_2_50_3d_sync
+            name: 3D Sync
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.christie_m_4k25_rgb_192_0_2_50_3d_darktime
+            name: Darktime
             grid_options:
               columns: 6

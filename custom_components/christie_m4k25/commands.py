@@ -69,6 +69,37 @@ class ChristieCommands:
         """Display an internal test pattern, by value or by name."""
         await self._async_run(lambda projector: projector.set_test_pattern(pattern))
 
+    async def async_set_3d_mode(self, mode: int | str) -> None:
+        """Set the 3D mode, by value or by name."""
+        await self._async_run(lambda projector: projector.set_3d_mode(mode))
+
+    async def async_set_3d_sync_output(self, output: int | str) -> None:
+        """Set where the 3D sync signal goes, by value or by name."""
+        await self._async_run(lambda projector: projector.set_3d_sync_output(output))
+
+    async def async_set_3d_emitter_delay(self, delay: int) -> None:
+        """Set the 3D sync delay. Only accepted in the packed 3D modes."""
+        await self._async_run(lambda projector: projector.set_3d_emitter_delay(delay))
+
+    async def async_set_3d_dark_interval(self, interval: int) -> None:
+        """Set the 3D dark interval. Only accepted in the packed 3D modes."""
+        await self._async_run(lambda projector: projector.set_3d_dark_interval(interval))
+
+    async def async_set_3d_input_inverted(self, inverted: bool) -> None:
+        """Swap (or un-swap) the left and right eyes. Refused in the packed 3D modes."""
+        await self._async_run(lambda projector: projector.set_3d_input_inverted(inverted))
+
+    async def async_set_3d_test_pattern(self, enabled: bool) -> None:
+        """Show or hide the 3D sync test pattern."""
+
+        def action(projector: ChristieM4K25) -> None:
+            if enabled:
+                projector.enable_3d_test_pattern()
+            else:
+                projector.disable_3d_test_pattern()
+
+        await self._async_run(action)
+
     async def async_set_liteloc(self, enabled: bool) -> None:
         """Enable or disable LiteLOC."""
         await self._async_run(lambda projector: projector.set_liteloc(enabled))

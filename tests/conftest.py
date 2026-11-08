@@ -1,5 +1,6 @@
 """Fixtures for the Christie M 4K25 integration tests."""
 
+from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -27,7 +28,7 @@ def get_state(hass: HomeAssistant, entity_id: str) -> State:
 
 def make_snapshot(**overrides) -> Snapshot:
     """Build a Snapshot with sensible defaults, overriding only what a test cares about."""
-    defaults = {
+    defaults: dict[str, Any] = {
         "power": "On",
         "power_code": 1,
         "is_on": True,

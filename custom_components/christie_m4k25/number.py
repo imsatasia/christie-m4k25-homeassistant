@@ -5,7 +5,14 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
-from christie_mseries import BRIGHTNESS_MAX_PERCENT, BRIGHTNESS_MIN_PERCENT
+from christie_mseries import (
+    BRIGHTNESS_MAX_PERCENT,
+    BRIGHTNESS_MIN_PERCENT,
+    THREE_D_DARK_INTERVAL_MAX,
+    THREE_D_DARK_INTERVAL_MIN,
+    THREE_D_EMITTER_DELAY_MAX,
+    THREE_D_EMITTER_DELAY_MIN,
+)
 from homeassistant.components.number import NumberEntity, NumberEntityDescription, NumberMode
 from homeassistant.exceptions import HomeAssistantError
 
@@ -40,6 +47,10 @@ class ChristieNumberEntityDescription(NumberEntityDescription):
 
     value_fn: Callable[[Snapshot], float | None]
     set_value_fn: Callable[[ChristieCommands, float], Coroutine[Any, Any, None]]
+    # None means always available (the existing numbers); the 3D timing
+    # numbers set one, since the projector refuses them outside the packed
+    # 3D modes.
+    available_fn: Callable[[Snapshot], bool] | None = None
 
 
 NUMBERS: tuple[ChristieNumberEntityDescription, ...] = (
@@ -106,6 +117,31 @@ NUMBERS: tuple[ChristieNumberEntityDescription, ...] = (
             "vertical", int(value)
         ),
     ),
+    # The projector publishes no unit for either 3D number, so none is shown.
+    ChristieNumberEntityDescription(
+        key="three_d_sync_delay",
+        translation_key="three_d_sync_delay",
+        name="3D Sync Delay",
+        mode=NumberMode.BOX,
+        native_min_value=THREE_D_EMITTER_DELAY_MIN,
+        native_max_value=THREE_D_EMITTER_DELAY_MAX,
+        native_step=1,
+        value_fn=lambda snap: snap.three_d_emitter_delay,
+        set_value_fn=lambda commands, value: commands.async_set_3d_emitter_delay(int(value)),
+        available_fn=lambda snap: snap.is_on and snap.three_d_timing,
+    ),
+    ChristieNumberEntityDescription(
+        key="three_d_dark_interval",
+        translation_key="three_d_dark_interval",
+        name="3D Dark Interval",
+        mode=NumberMode.BOX,
+        native_min_value=THREE_D_DARK_INTERVAL_MIN,
+        native_max_value=THREE_D_DARK_INTERVAL_MAX,
+        native_step=1,
+        value_fn=lambda snap: snap.three_d_dark_interval,
+        set_value_fn=lambda commands, value: commands.async_set_3d_dark_interval(int(value)),
+        available_fn=lambda snap: snap.is_on and snap.three_d_timing,
+    ),
 )
 
 
@@ -141,6 +177,16 @@ class ChristieNumber(ChristieEntity, NumberEntity):
         """Return the current value."""
         snap = self._snapshot
         return self.entity_description.value_fn(snap) if snap else None
+
+    @property
+    def available(self) -> bool:
+        """Available while polling works and, for numbers that declare one,
+        while the projector's current state allows setting them."""
+        check = self.entity_description.available_fn
+        if check is None:
+            return super().available
+        snap = self._snapshot
+        return super().available and snap is not None and check(snap)
 
     async def async_set_native_value(self, value: float) -> None:
         """Set a new value."""

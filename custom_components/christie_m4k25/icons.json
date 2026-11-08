@@ -6,6 +6,12 @@
       },
       "shutter": {
         "default": "mdi:camera-iris"
+      },
+      "three_d_invert": {
+        "default": "mdi:swap-horizontal"
+      },
+      "three_d_test_pattern": {
+        "default": "mdi:sine-wave"
       }
     },
     "number": {
@@ -23,6 +29,12 @@
       },
       "lens_vertical": {
         "default": "mdi:arrow-up-down"
+      },
+      "three_d_sync_delay": {
+        "default": "mdi:timer-sand"
+      },
+      "three_d_dark_interval": {
+        "default": "mdi:brightness-4"
       }
     },
     "select": {
@@ -31,6 +43,12 @@
       },
       "test_pattern": {
         "default": "mdi:test-tube"
+      },
+      "three_d_mode": {
+        "default": "mdi:video-3d"
+      },
+      "three_d_sync_output": {
+        "default": "mdi:export-variant"
       }
     },
     "sensor": {
@@ -45,6 +63,12 @@
       },
       "intake_temperature": {
         "default": "mdi:thermometer"
+      },
+      "three_d_sync": {
+        "default": "mdi:sync"
+      },
+      "three_d_darktime": {
+        "default": "mdi:timer-check-outline"
       }
     },
     "binary_sensor": {

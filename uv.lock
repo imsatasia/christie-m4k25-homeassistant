@@ -736,7 +736,7 @@ dev = [
 
 [[package]]
 name = "christie-mseries"
-version = "1.1.0"
+version = "1.2.0"
 source = { editable = "../py-christie-mseries" }
 
 [package.metadata]

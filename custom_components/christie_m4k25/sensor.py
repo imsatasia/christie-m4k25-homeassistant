@@ -57,6 +57,22 @@ SENSORS: tuple[ChristieSensorEntityDescription, ...] = (
         value_fn=lambda snap: snap.hours or None,
     ),
     ChristieSensorEntityDescription(
+        key="three_d_sync",
+        translation_key="three_d_sync",
+        name="3D Sync",
+        # The projector's own wording ("Valid HDMI 3D Sync"); "N/A" when no
+        # 3D signal is being shown.
+        value_fn=lambda snap: snap.three_d_sync or None,
+    ),
+    ChristieSensorEntityDescription(
+        key="three_d_darktime",
+        translation_key="three_d_darktime",
+        name="3D Darktime",
+        # "Achieved" / "Not Achieved": whether the dark interval fits the
+        # frame rate. "N/A" when no 3D signal is being shown.
+        value_fn=lambda snap: snap.three_d_darktime or None,
+    ),
+    ChristieSensorEntityDescription(
         key="intake_temperature",
         translation_key="intake_temperature",
         name="Intake Temperature",

@@ -34,6 +34,13 @@ RGB** and enter the projector's IP (it should have a DHCP reservation).
 | Lens Focus / Zoom / Horizontal / Vertical | `number` | Absolute motor positions. No published range — see below. Disabled by default; enable the ones you use. |
 | Input | `select` | Lists the projector's physical ports by label ("HDMI 2.1 Port 3", "DisplayPort 1.4 Port 4", ...), not its own `One-Port VOM-HDMI` names or an index. The labels come from `py-christie-mseries`' `INPUTS` table, so they match the CLI. Unavailable while the projector is in standby, which refuses input changes. An input the library has no label for is shown under the projector's own name but can't be chosen. |
 | Test Pattern | `select` | Options and labels come straight from the library, so there's one source of truth for the list. Rejected (entity goes unavailable) while the projector is in standby. |
+| 3D Mode | `select` | Off, Auto Detect, Multi-Flash 3D, Side-by-Side 3D, Top-and-Bottom 3D, Frame Packing 3D — names and numbers read back from the projector, from `py-christie-mseries`' `THREE_D_MODES`. Unavailable in standby. |
+| 3D Sync Output | `select` | To Emitter / To Next Input. Only available in the packed 3D modes (Side-by-Side, Top-and-Bottom, Frame Packing); the projector refuses it in the others. |
+| 3D Sync Delay | `number` | −1000 to 1000. Packed 3D modes only. The projector publishes no unit, so none is shown. |
+| 3D Dark Interval | `number` | 250 to 3000. Packed 3D modes only. The projector clamps out-of-range values silently; Home Assistant refuses them instead. No unit, as above. |
+| 3D Invert Eyes | `switch` | Swaps left and right. The reverse of the timing controls: available in Off, Auto Detect and Multi-Flash, refused in the packed modes. |
+| 3D Test Pattern | `switch` | The scrolling sync-check pattern. Available in every mode while the projector is on. |
+| 3D Sync / 3D Darktime | `sensor` | Read-only, from the projector's signal status: e.g. "Valid HDMI 3D Sync", and "Achieved" / "Not Achieved" for whether the dark interval fits the frame rate. "N/A" when no 3D signal is shown. |
 | Status | `sensor` | The projector's own power wording, e.g. "On", "Standby Mode", "Warming Up". |
 | Input | `sensor` | Current input, as the projector's own name (e.g. `One-Port VOM-HDMI`). |
 | Hours | `sensor` | Text, not numeric — the projector reports it as `"3:14 (h:m)"`. |

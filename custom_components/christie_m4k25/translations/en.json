@@ -81,6 +81,12 @@
       },
       "shutter": {
         "name": "Shutter"
+      },
+      "three_d_invert": {
+        "name": "3D Invert Eyes"
+      },
+      "three_d_test_pattern": {
+        "name": "3D Test Pattern"
       }
     },
     "number": {
@@ -98,6 +104,12 @@
       },
       "lens_vertical": {
         "name": "Lens Vertical"
+      },
+      "three_d_sync_delay": {
+        "name": "3D Sync Delay"
+      },
+      "three_d_dark_interval": {
+        "name": "3D Dark Interval"
       }
     },
     "select": {
@@ -106,6 +118,12 @@
       },
       "test_pattern": {
         "name": "Test Pattern"
+      },
+      "three_d_mode": {
+        "name": "3D Mode"
+      },
+      "three_d_sync_output": {
+        "name": "3D Sync Output"
       }
     },
     "sensor": {
@@ -120,6 +138,12 @@
       },
       "intake_temperature": {
         "name": "Intake Temperature"
+      },
+      "three_d_sync": {
+        "name": "3D Sync"
+      },
+      "three_d_darktime": {
+        "name": "3D Darktime"
       }
     },
     "binary_sensor": {
