@@ -15,7 +15,11 @@ from .const import CONF_PORT, DEFAULT_PORT, DOMAIN, NAME
 
 _LOGGER = logging.getLogger(__name__)
 
-DATA_SCHEMA = vol.Schema(
+# Typed Any on purpose: Home Assistant 2026.10+ declares its schemas as probatio
+# and aliases `voluptuous` to probatio at runtime, while older Home Assistant
+# (this integration supports back to 2024.4.2, see hacs.json) uses voluptuous.
+# `import voluptuous` works on both, but no single static type fits both.
+DATA_SCHEMA: Any = vol.Schema(
     {
         vol.Required(CONF_HOST): str,
         vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
