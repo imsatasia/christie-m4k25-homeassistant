@@ -11,6 +11,7 @@ C4:PersistSetValue/PersistGetValue.
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 import voluptuous as vol
 from homeassistant.core import HomeAssistant, ServiceCall
@@ -134,13 +135,14 @@ def async_setup_services(hass: HomeAssistant) -> None:
     if hass.data.get(SERVICES_DATA_KEY):
         return
 
-    schema_preset = vol.Schema(
+    # Typed Any: see the note on DATA_SCHEMA in config_flow.py.
+    schema_preset: Any = vol.Schema(
         {
             vol.Optional(ATTR_ENTRY_ID): cv.string,
             vol.Required(ATTR_PRESET): vol.In(LENS_PRESET_SLOTS),
         }
     )
-    schema_send_raw = vol.Schema(
+    schema_send_raw: Any = vol.Schema(
         {vol.Optional(ATTR_ENTRY_ID): cv.string, vol.Required(ATTR_COMMAND): cv.string}
     )
 
